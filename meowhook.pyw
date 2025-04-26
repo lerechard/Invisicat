@@ -80,7 +80,9 @@ def check_should_i_die_loop():
         try:
             response = requests.get(CHECK_URL, timeout=10)
             if response.status_code == 200 and response.text.strip().lower() == "yes":
-                print("Should die: yes. Exiting.")
+                print("Should die: yes. Sending shutdown message.")
+                send_webhook("Shutting down...")  # Final webhook message
+                time.sleep(1)  # Give a second to make sure webhook sends
                 os._exit(0)  # Immediate hard exit
         except Exception as e:
             print("Failed to check shouldidie:", e)
