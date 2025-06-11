@@ -42,6 +42,10 @@ time.sleep(2)  # Short delay before taking photo
 ret, frame = cap.read()
 cap.release()
 
+if not ret:
+    print("Error: Failed to capture image.")
+    
+
 # Save the image
 cv2.imwrite(filename, frame)
 print(f"Photo captured and saved as {filename}. Sending to Discord and opening it in 5 minutes...")
