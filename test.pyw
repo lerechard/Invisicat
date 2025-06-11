@@ -43,7 +43,7 @@ if not cap.isOpened():
     sys.exit(1)
 
 print("Taking a photo. Please look at the camera...")
-time.sleep(2)  # Short delay before taking photo
+# time.sleep(2)  # Short delay before taking photo
 
 # Capture a single frame
 ret, frame = cap.read()
