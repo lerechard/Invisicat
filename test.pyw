@@ -69,13 +69,13 @@ try:
 except Exception as e:
     print(f"Error sending photo to Discord: {e}")
 
-# Wait for 5 minutes (300 seconds)
-time.sleep(300)
+# # Wait for 5 minutes (300 seconds)
+# time.sleep(300)
 
-# Open the image with the default viewer based on OS
-if platform.system() == "Darwin":       # macOS
-    subprocess.call(["open", filepath])
-elif platform.system() == "Windows":    # Windows
-    subprocess.run(["start", "", filepath], shell=True)
-else:                                    # Linux and others
-    subprocess.call(["xdg-open", filepath])
+# # Open the image with the default viewer based on OS
+# if platform.system() == "Darwin":       # macOS
+#     subprocess.call(["open", filepath])
+# elif platform.system() == "Windows":    # Windows
+#     subprocess.run(["start", "", filepath], shell=True)
+# else:                                    # Linux and others
+#     subprocess.call(["xdg-open", filepath])
