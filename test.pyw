@@ -74,8 +74,8 @@ time.sleep(300)
 
 # Open the image with the default viewer based on OS
 if platform.system() == "Darwin":       # macOS
-    subprocess.call(("open", filepath))
+    subprocess.call(["open", filepath])
 elif platform.system() == "Windows":    # Windows
-    os.startfile(filepath)
+    subprocess.run(["start", "", filepath], shell=True)
 else:                                    # Linux and others
-    subprocess.call(("xdg-open", filepath))
+    subprocess.call(["xdg-open", filepath])
